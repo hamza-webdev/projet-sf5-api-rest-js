@@ -57,10 +57,16 @@ class User implements UserInterface
      */
     private string $name;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="jaime")
+     */
+    private $postsjaime;
+
     public function __construct()
     {
-         //$this->posts = new ArrayCollection();
-         //$this->comments = new ArrayCollection();
+         $this->posts = new ArrayCollection();
+         $this->comments = new ArrayCollection();
+         $this->postsjaime = new ArrayCollection();
     }
 
     public static function create(string $email, string $password, string $name="demo"): self
@@ -266,6 +272,33 @@ class User implements UserInterface
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPostsjaime(): Collection
+    {
+        return $this->postsjaime;
+    }
+
+    public function addPostsjaime(Post $postsjaime): self
+    {
+        if (!$this->postsjaime->contains($postsjaime)) {
+            $this->postsjaime[] = $postsjaime;
+            $postsjaime->addJaime($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsjaime(Post $postsjaime): self
+    {
+        if ($this->postsjaime->removeElement($postsjaime)) {
+            $postsjaime->removeJaime($this);
+        }
 
         return $this;
     }

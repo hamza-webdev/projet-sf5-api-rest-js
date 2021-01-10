@@ -39,7 +39,7 @@ class Post
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post")
      */
-    private ?Comment $comments;
+    private Comment $comments;
 
     /**
      * @var User[]|Collection
@@ -53,11 +53,17 @@ class Post
      */
     private $publishedAt;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="postsjaime")
+     */
+    private $jaime;
+
     public function __construct()
     {
-        //$this->comments = new ArrayCollection();
+        $this->comments = new ArrayCollection();
         $this->publishedAt = new \DateTimeImmutable();
         $this->likedBy = new ArrayCollection();
+        $this->jaime = new ArrayCollection();
     }
 
     /**
@@ -123,12 +129,12 @@ class Post
     /**
      * @return Collection|Comment[]
      */
-    public function getComments(): ?Collection
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function addComment(?Comment $comment): self
+    public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
@@ -210,6 +216,30 @@ class Post
     public function setPublishedAt(?\DateTimeImmutable $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getJaime(): Collection
+    {
+        return $this->jaime;
+    }
+
+    public function addJaime(User $jaime): self
+    {
+        if (!$this->jaime->contains($jaime)) {
+            $this->jaime[] = $jaime;
+        }
+
+        return $this;
+    }
+
+    public function removeJaime(User $jaime): self
+    {
+        $this->jaime->removeElement($jaime);
 
         return $this;
     }
