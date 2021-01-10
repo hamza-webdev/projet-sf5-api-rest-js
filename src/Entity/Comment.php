@@ -39,6 +39,25 @@ class Comment
      */
     private POST $post;
 
+    /**
+     * Undocumented function
+     * @param string $content
+     * @param string $title
+     * @param \App\Entity\User $author
+     *
+     * @return self
+     */
+     public static function create(string $message, Post $post, User $author): self
+     {
+         $comment = new self();
+         $comment->message = $message;
+         $comment->post = $post;
+         $comment->author = $author;
+ 
+         return $comment;
+ 
+     }
+
     public function getId(): ?int
     {
         return $this->id;

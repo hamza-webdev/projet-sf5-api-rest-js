@@ -39,14 +39,14 @@ class Post
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post")
      */
-    private Comment $comments;
+    private ?Comment $comments;
 
     /**
-     * @var User[]
+     * @var User[]|Collection
      * @ORM\ManyToMany(targetEntity="User")
      * @ORM\JoinTable(name="post_likes")
      */
-    private array $likedBy;
+    private Collection $likedBy;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
@@ -55,10 +55,20 @@ class Post
 
     public function __construct()
     {
-        $this->comments = new ArrayCollection();
+        //$this->comments = new ArrayCollection();
+        $this->publishedAt = new \DateTimeImmutable();
+        $this->likedBy = new ArrayCollection();
     }
 
-    public static function create(string $content, string $title, User $author)
+    /**
+     * Undocumented function
+     * @param string $content
+     * @param string $title
+     * @param \App\Entity\User $author
+     *
+     * @return self
+     */
+    public static function create(string $content, string $title, User $author): self
     {
         $post = new self();
         $post->content = $content;
@@ -113,12 +123,12 @@ class Post
     /**
      * @return Collection|Comment[]
      */
-    public function getComments(): Collection
+    public function getComments(): ?Collection
     {
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): self
+    public function addComment(?Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
@@ -143,9 +153,9 @@ class Post
     /**
      * 
      *
-     * @return User[]|null
+     * @return User[]|Collection
      */
-    public function getLikedBy(): ?array
+    public function getLikedBy(): ?Collection
     {
         return $this->likedBy;
     }
@@ -163,13 +173,32 @@ class Post
         return $this;
     }
 
+    /**
+     * @param \App\Entity\User $user
+     *
+     * @return \Doctrine\Common\Collections\Collection User[]|Collection
+     */
     public function likeBy(User $user): void
     {
-        $this->likedBy[] = $user;
+        if($this->likedBy->contains($user)){
+            return;
+        }
+        $this->likedBy->add($user);
     }
 
-    public function disLikeBy(User $user): void
+    /**
+     * [disLikeBy description]
+     *
+     * @param   User  $user  [$user description]
+     *
+     * @return  void         [return description]
+     */
+    public function disLikeBy(?User $user): void
     {
+        if(!$this->likedBy->contains($user)){
+            return;
+        }
+        $this->likedBy->removeElement($user);
         
     }
 

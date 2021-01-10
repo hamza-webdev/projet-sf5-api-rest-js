@@ -31,6 +31,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @var Array<mixed>
      */
     private array $roles = [];
 
@@ -78,11 +79,22 @@ class User implements UserInterface
         return $this->id;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * Undocumented function
+     * @var string $email
+     *
+     * @return self
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -112,6 +124,12 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+    /**
+     * Undocumented function
+     * @var Array<mixed> $roles
+     *
+     * @return self
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -169,6 +187,12 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     * @var \App\Entity\Post $post
+     *
+     * @return self
+     */
     public function removePost(Post $post): self
     {
         if ($this->posts->removeElement($post)) {
@@ -189,6 +213,12 @@ class User implements UserInterface
         return $this->comments;
     }
 
+    /**
+     * Undocumented function
+     * @var \App\Entity\Comment|null $comment
+     *
+     * @return self
+     */
     public function addComment(?Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -199,6 +229,12 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     * @var \App\Entity\Comment $comment
+     *
+     * @return self
+     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
@@ -211,11 +247,22 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * Undocumented function
+     * @var string|null $name
+     *
+     * @return self
+     */
     public function setName(?string $name): self
     {
         $this->name = $name;
