@@ -42,23 +42,39 @@ class Post
     private Comment $comments;
 
     /**
-     * @var User[]
+     * @var User[]|Collection
      * @ORM\ManyToMany(targetEntity="User")
      * @ORM\JoinTable(name="post_likes")
      */
-    private array $likedBy;
+    private Collection $likedBy;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $publishedAt;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="postsjaime")
+     */
+    private $jaime;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->publishedAt = new \DateTimeImmutable();
+        $this->likedBy = new ArrayCollection();
+        $this->jaime = new ArrayCollection();
     }
 
-    public static function create(string $content, string $title, User $author)
+    /**
+     * Undocumented function
+     * @param string $content
+     * @param string $title
+     * @param \App\Entity\User $author
+     *
+     * @return self
+     */
+    public static function create(string $content, string $title, User $author): self
     {
         $post = new self();
         $post->content = $content;
@@ -143,9 +159,9 @@ class Post
     /**
      * 
      *
-     * @return User[]|null
+     * @return User[]|Collection
      */
-    public function getLikedBy(): ?array
+    public function getLikedBy(): ?Collection
     {
         return $this->likedBy;
     }
@@ -163,13 +179,32 @@ class Post
         return $this;
     }
 
+    /**
+     * @param \App\Entity\User $user
+     *
+     * @return \Doctrine\Common\Collections\Collection User[]|Collection
+     */
     public function likeBy(User $user): void
     {
-        $this->likedBy[] = $user;
+        if($this->likedBy->contains($user)){
+            return;
+        }
+        $this->likedBy->add($user);
     }
 
-    public function disLikeBy(User $user): void
+    /**
+     * [disLikeBy description]
+     *
+     * @param   User  $user  [$user description]
+     *
+     * @return  void         [return description]
+     */
+    public function disLikeBy(?User $user): void
     {
+        if(!$this->likedBy->contains($user)){
+            return;
+        }
+        $this->likedBy->removeElement($user);
         
     }
 
@@ -181,6 +216,30 @@ class Post
     public function setPublishedAt(?\DateTimeImmutable $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getJaime(): Collection
+    {
+        return $this->jaime;
+    }
+
+    public function addJaime(User $jaime): self
+    {
+        if (!$this->jaime->contains($jaime)) {
+            $this->jaime[] = $jaime;
+        }
+
+        return $this;
+    }
+
+    public function removeJaime(User $jaime): self
+    {
+        $this->jaime->removeElement($jaime);
 
         return $this;
     }

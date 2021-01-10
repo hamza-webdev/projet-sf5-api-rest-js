@@ -31,6 +31,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @var Array<mixed>
      */
     private array $roles = [];
 
@@ -56,10 +57,16 @@ class User implements UserInterface
      */
     private string $name;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="jaime")
+     */
+    private $postsjaime;
+
     public function __construct()
     {
-         //$this->posts = new ArrayCollection();
-         //$this->comments = new ArrayCollection();
+         $this->posts = new ArrayCollection();
+         $this->comments = new ArrayCollection();
+         $this->postsjaime = new ArrayCollection();
     }
 
     public static function create(string $email, string $password, string $name="demo"): self
@@ -78,11 +85,22 @@ class User implements UserInterface
         return $this->id;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * Undocumented function
+     * @var string $email
+     *
+     * @return self
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -112,6 +130,12 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+    /**
+     * Undocumented function
+     * @var Array<mixed> $roles
+     *
+     * @return self
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -169,6 +193,12 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     * @var \App\Entity\Post $post
+     *
+     * @return self
+     */
     public function removePost(Post $post): self
     {
         if ($this->posts->removeElement($post)) {
@@ -189,6 +219,12 @@ class User implements UserInterface
         return $this->comments;
     }
 
+    /**
+     * Undocumented function
+     * @var \App\Entity\Comment|null $comment
+     *
+     * @return self
+     */
     public function addComment(?Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -199,6 +235,12 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     * @var \App\Entity\Comment $comment
+     *
+     * @return self
+     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
@@ -211,14 +253,52 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * Undocumented function
+     * @var string|null $name
+     *
+     * @return self
+     */
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPostsjaime(): Collection
+    {
+        return $this->postsjaime;
+    }
+
+    public function addPostsjaime(Post $postsjaime): self
+    {
+        if (!$this->postsjaime->contains($postsjaime)) {
+            $this->postsjaime[] = $postsjaime;
+            $postsjaime->addJaime($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsjaime(Post $postsjaime): self
+    {
+        if ($this->postsjaime->removeElement($postsjaime)) {
+            $postsjaime->removeJaime($this);
+        }
 
         return $this;
     }
