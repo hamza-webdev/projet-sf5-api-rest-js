@@ -11,71 +11,50 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFixtures extends Fixture
 {
-
-    private ObjectManager $manager;
-    private UserPasswordEncoderInterface $encoderPassword;
+    private ObjectManager $_manager;
+    private UserPasswordEncoderInterface $_encoderPassword;
     public function __construct(UserPasswordEncoderInterface $encoderPassword)
     {
-        $this->encoderPassword = $encoderPassword;
+        $this->_encoderPassword = $encoderPassword;
     }
 
-    public function load(ObjectManager $manager)
-    {
 
+    public function load(ObjectManager $manager): void
+    {
         $users = [];
 
-        for ($i=0; $i < 10; $i++) { 
-
+        for ($i=0; $i < 10; $i++) {
             $user = User::create(
-                "mail+{$i}@gmail.com", 
-                $this->encoderPassword->encodePassword((new User()), "password"), 
+                "mail+{$i}@gmail.com",
+                $this->_encoderPassword->encodePassword((new User()), "password"),
                 "Jean {$i}"
             );
             $users[] = $user;
 
+
+            $manager->
             $manager->persist($user);
+        }
 
-            
-           
-            }
-            $userLikes = array_slice($users, 0, 5);
-            //foreach($users as $user)
-            //{
-                
-                for ($j=1; $j < 5; $j++) { 
-                    $post = Post::create("contenue de article num {$j}", "titre article {$j}", $user);                  
+        $userLikes = array_slice($users, 0, 5);
 
-                    foreach($userLikes as $u)
-                    {
-                        $post->likeBy($u);                    
-                    }
-    
-                    $manager->persist($post);
-
-                    for ($k=0; $k < 5; $k++) { 
-                        $comment = Comment::create(
-                            "Le message comment {$k}", 
-                            $post, 
-                            $users[array_rand($users)]
-                        );
-                        $manager->persist($comment);
-                    }
-                    
-                    
-
+        for ($j=1; $j < 5; $j++) {
+            $post = Post::create("text article {$j}", "titre article {$j}", $user);
+            foreach ($userLikes as $u) {
+                $post->likeBy($u);
             }
 
+            $manager->persist($post);
 
-
-            // $user = new User();
-            // $user->setPassword($encoderPassword->encodePassword($user, 'password)'))
-            //     ->setEmail(("email+{$i}@gmail.com"))
-            //     ->setName("Francois {$i}")
-            //     ;
-
-            
-        //}
-
+            for ($k=0; $k < 5; $k++) {
+                $comment = Comment::create(
+                    "Le message comment {$k}",
+                    $post,
+                    $users[array_rand($users)]
+                );
+                $manager->persist($comment);
+            }
+        }
         $manager->flush();
     }
 }
