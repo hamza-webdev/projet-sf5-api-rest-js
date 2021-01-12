@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use ErrorException;
 use App\Entity\User;
 use App\Services\SendEmail;
 use App\Form\RegistrationFormType;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -65,30 +68,48 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    /**
-     * Verifier url cliquer par l utilisateur appartir de son email
-     * @Route("/{id<\d+>}/{token}", name="app_verify_account", methods={"GET"})
-     */
-    public function VerifyUserAccount(
-        EntityManagerInterface $entityManager,
-        User $user,
-        string $token
-    ): Response {
-        if (($user->getRegisterToken() === null) || ($user->getRegisterToken() !== $token) ||
-            ($this->isNotRequestedInTime($user->getAccountMustBeVerifeidBefore()))) {
-            throw new AccessDeniedException();
-        }
-        $user->setIsVerified(true)
-            ->setAccountVerifiedAt(new \DatetimeImmutable('now'))
-            ->setRegisterToken(null);
 
-        $this->addFlash('success', 'Votre compte utilisateur est dés à present activé, vous pouvez vous connecter');
+    // public function VerifyUserAccount(
+    //     EntityManagerInterface $entityManager,
+    //     User $user,
+    //     string $token
+    // ): Response {
+    //     if (($user->getRegisterToken() === null) || ($user->getRegisterToken() !== $token) ||
+    //         ($this->isNotRequestedInTime($user->getAccountMustBeVerifeidBefore()))) {
+    //         throw new AccessDeniedException();
+    //     }
+    //     $user->setIsVerified(true)
+    //         ->setAccountVerifiedAt(new \DatetimeImmutable('now'))
+    //         ->setRegisterToken(null);
 
-        return $this->redirectToRoute('app_login');
-    }
+    //     $this->addFlash('success', 'Votre compte utilisateur est dés à present activé, vous pouvez vous connecter');
+
+    //     return $this->redirectToRoute('app_login');
+    // }
 
     public function isNotRequestedInTime(\DateTimeImmutable $accountMustBeVerifeidBefore): bool
     {
         return (new \DatetimeImmutable('now') > $accountMustBeVerifeidBefore);
+    }
+
+    /**
+     * @Route("/{id<\d+>}/{register_token}", name="app_verify_account", methods={"GET"})
+     */
+    public function verifyUserAcount(User $user, $register_token, EntityManagerInterface $entityManager)
+    {
+        if (!$user || $user->getRegisterToken() != $register_token) {
+            throw new \Exception('User introuvable et token invalide !! ');
+        }
+        //if ($user->getRegisterToken() === $register_token) {
+        $user->setAccountVerifiedAt(new DateTimeImmutable("now"))
+            ->setIsVerified(true)
+            //->setRegisteredAt(new DateTimeImmutable("now"))
+            ->setRegisterToken(null);
+
+        $this->addFlash('success', 'Votre compte utilisateur est dés à present activé, vous pouvez vous connecter');
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_login');
     }
 }

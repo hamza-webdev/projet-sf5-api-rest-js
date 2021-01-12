@@ -9,23 +9,29 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private ObjectManager $manager;
     private \Faker\Generator $faker;
     private UserPasswordEncoderInterface $userPasswordEncoderInterface;
+    private TokenGeneratorInterface $tokenGenerator;
 
-    public function __construct(UserPasswordEncoderInterface $userPasswordEncoderInterface)
+    public function __construct(
+        UserPasswordEncoderInterface $userPasswordEncoderInterface,
+        TokenGeneratorInterface $tokenGenerator
+    )
     {
         $this->userPasswordEncoderInterface = $userPasswordEncoderInterface;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     public function load(ObjectManager $manager): void
     {
-         $this->manager = $manager;
+        $this->manager = $manager;
         $this->faker = Factory::create();
-        $this->generateUsers(2); 
+        $this->generateUsers(2);
         $this->manager->flush();
     }
 
@@ -40,16 +46,15 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     {
         $isVerified = [true, false];
 
-        for($i = 0; $i < $number; $i++)
-        {
+        for ($i = 0; $i < $number; $i++) {
             $user = new User();
-            $user->setPassword($this->userPasswordEncoderInterface->encodePassword($user, 'badpassword'))      ->setEmail($this->faker->email)
+            $user->setPassword($this->userPasswordEncoderInterface->encodePassword($user, 'badpassword')) ->setEmail($this->faker->email)
             ->setIsVerified($isVerified[$i])
+            ->setRegisterToken($this->tokenGenerator->generateToken())
             ->setAuthor($this->getReference("author{$i}"))
             ;
-            
+
             $this->manager->persist($user);
-            
         }
     }
 }
