@@ -51,9 +51,9 @@ class RegistrationController extends AbstractController
                 'recepient_email'   => $user->getEmail(),
                 'subject'           => "Vérification de votre adresse email pour activer votre compte utilisateur",
                 'html_template'     => "registration/register_confirm_email.html.twig",
-                'context'           =>  [
+                'contexts'           =>  [
                     'userID'            => $user->getId(),
-                    'registrationToken' => $registrationToken,
+                    'register_token' => $registrationToken,
                     'tokenLifeTime'     => $user->getAccountMustBeVerifeidBefore()->format('d/m/Y à H:i')
                 ]
             ]);

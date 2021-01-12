@@ -5,8 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -39,8 +43,8 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="New password can not be blank.")
-     * @Assert\Regex(pattern="/^(?=.*[a-z])(?=.*\\d).{6,}$/i", message="New password is required to be minimum 6 chars in length and to include at least one letter and one number.")
-     */
+     * @Assert\NotCompromisedPassword
+      */
     private string  $password;
 
     /**

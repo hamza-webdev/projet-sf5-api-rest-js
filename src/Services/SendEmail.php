@@ -32,7 +32,7 @@ class SendEmail
             'recepient_email'   => $recepientEmail,
             'subject'           => $subject,
             'html_template'     => $htmlTemplate,
-            'contexts'          => $context
+            'contexts'          => $contexts
         ] = $arguments;
 
         $email = new TemplatedEmail();
@@ -41,7 +41,7 @@ class SendEmail
               ->to($recepientEmail)
               ->subject($subject)
               ->htmlTemplate($htmlTemplate)
-              ->context($context);
+              ->context($contexts);
 
         try {
             // envoi email
