@@ -1,0 +1,45 @@
+results:
+    -
+        gender: male
+        name:
+            title: Mr
+            first: Mikael
+            last: Hannula
+        location:
+            street: {number: 1219, name: Bulevardi}
+            city: Liminka
+            state: Pirkanmaa
+            country: Finland
+            postcode: 58097
+            coordinates: {latitude: '-13.6369', longitude: '-24.8912'}
+            timezone: {offset: '+4:00', description: 'Abu Dhabi, Muscat, Baku, Tbilisi'}
+        email: mikael.hannula@example.com
+        login:
+            uuid: 91911798-669e-432c-8835-6c0cdc99cd1d
+            username: brownfrog457
+            password: kasper
+            salt: yAK3mjXr
+            md5: 250c964bf9b0e1c6823f8e0b2ba6f6f2
+            sha1: fd90e1243abf68489352bee90b4197433d6cc2e3
+            sha256: 8e441cdd14a72d274abd4e8e2ef36189e49f8b47d4d2648b9d4663960c0904df
+        dob:
+            date: '1986-11-13T23:00:35.844Z'
+            age: 35
+        registered:
+            date: '2002-04-02T15:32:51.556Z'
+            age: 19
+        phone: 08-755-881
+        cell: 048-007-73-20
+        id:
+            name: HETU
+            value: NaNNA509undefined
+        picture:
+            large: 'https://randomuser.me/api/portraits/men/80.jpg'
+            medium: 'https://randomuser.me/api/portraits/med/men/80.jpg'
+            thumbnail: 'https://randomuser.me/api/portraits/thumb/men/80.jpg'
+        nat: FI
+info:
+    seed: 8129c6b6e35b60bc
+    results: 1
+    page: 1
+    version: '1.3'
