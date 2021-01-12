@@ -24,6 +24,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(message="Veuillez saissir votre email")
+     * @Assert\Email(message = "The email '{{ value }}' n est pas valide." )
      */
     private string $email;
 
@@ -36,6 +38,8 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="New password can not be blank.")
+     * @Assert\Regex(pattern="/^(?=.*[a-z])(?=.*\\d).{6,}$/i", message="New password is required to be minimum 6 chars in length and to include at least one letter and one number.")
      */
     private string  $password;
 
