@@ -6,7 +6,6 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
-
 class SendEmail
 {
     private MailerInterface $mailer;
@@ -17,7 +16,7 @@ class SendEmail
     {
         $this->mailer = $mailer;
         $this->senderEmail = $senderEmail;
-        $this->senderName = $senderName;        
+        $this->senderName = $senderName;
     }
 
     /**
@@ -30,8 +29,8 @@ class SendEmail
     public function send(array $arguments): void
     {
         [
-            'recepient_email'   => $recepientEmail, 
-            'subject'           => $subject, 
+            'recepient_email'   => $recepientEmail,
+            'subject'           => $subject,
             'html_template'     => $htmlTemplate,
             'contexts'          => $context
         ] = $arguments;
@@ -50,8 +49,5 @@ class SendEmail
         } catch (TransportExceptionInterface $th) {
             throw $th;
         }
-
     }
-
 }
-
