@@ -14,7 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
-
 class RegistrationFormType extends AbstractType
 {
     /**
@@ -45,7 +44,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('password', RepeatedType::class, [
-                'type'              => PasswordType::class, 
+                'type'              => PasswordType::class,
                 'invalid_message'   => "Le mots de passe saisie ne correspond pas.",
                 'required'          => true,
                 'first_options'     => [
@@ -62,7 +61,7 @@ class RegistrationFormType extends AbstractType
                 'second_options' => [
                     'label'      => "Confirmer le mot de passe : ",
                     'label_attr' => [
-                        'title'     => "Confirmez le mot de passe"                        
+                        'title'     => "Confirmez le mot de passe"
                     ],
                     'attr' => [
                         'pattern'   => '^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-+!*$@%_])([-+!*$@%_\w]{8,15})$',
@@ -70,8 +69,6 @@ class RegistrationFormType extends AbstractType
                         'maxlenght' => 255
                     ]
                 ]
-
-
             ])
             // ->add('plainPassword', PasswordType::class, [
             //     // instead of being set onto the object directly,
@@ -92,13 +89,13 @@ class RegistrationFormType extends AbstractType
         ;
     }
 
-/**
- * [configureOptions description]
- *
- * @param   OptionsResolver  $resolver  [$resolver description]
- *
- * @return  void                        [return description]
- */
+    /**
+     * [configureOptions description]
+     *
+     * @param   OptionsResolver  $resolver  [$resolver description]
+     *
+     * @return  void                        [return description]
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
