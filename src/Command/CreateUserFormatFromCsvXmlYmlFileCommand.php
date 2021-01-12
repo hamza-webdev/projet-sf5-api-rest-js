@@ -70,7 +70,7 @@ class CreateUserFormatFromCsvXmlYmlFileCommand extends Command
 
     private function getDataFromFile(): array
     {
-        $file = $this->datasDirectory . 'user4.csv';
+        $file = $this->datasDirectory . 'user.csv';
 
         // recuperer l extention du fuchier avec function pathinfo
         $fileExtention = pathinfo($file, PATHINFO_EXTENSION);

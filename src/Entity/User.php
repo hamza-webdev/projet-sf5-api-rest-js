@@ -7,10 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @Table(name="users")
  * @UniqueEntity(fields={"email"}, message="Vous etes déjas enregisterer avec cette adresse email")
@@ -166,7 +164,7 @@ class User implements UserInterface
         return $this;
     }
 
- 
+
     public function getSalt(): ?string
     {
         return null;

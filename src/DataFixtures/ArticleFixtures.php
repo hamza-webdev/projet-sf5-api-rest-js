@@ -1,5 +1,5 @@
-<?php 
- 
+<?php
+
 namespace App\DataFixtures;
 
 use Faker\Factory;
@@ -16,11 +16,11 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 /**
  * Class Article fixtures
- * 
+ *
  */
 class ArticleFixtures extends Fixture implements DependentFixtureInterface
 {
-    private ObjectManager $_manager;
+    private ObjectManager $manager;
     private \Faker\Generator $faker;
     private SluggerInterface $slugger;
 
@@ -28,60 +28,58 @@ class ArticleFixtures extends Fixture implements DependentFixtureInterface
      * Constructor
      * @param \Symfony\Component\String\Slugger\SluggerInterface $slugger
      */
-    public function __construct(SluggerInterface $slugger){
-        $this->slugger = $slugger;  
-             
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
     }
 
     /**
      * Load Fixture
-     * 
-     * @param \Doctrine\Persistence\ObjectManager $_manager
-     * 
-     * @return void     * 
+     *
+     * @param \Doctrine\Persistence\ObjectManager $manager
+     *
+     * @return void     *
      */
-    public function load(ObjectManager $_manager): void
+    public function load(ObjectManager $manager): void
     {
-        $this->_manager = $_manager;
+        $this->manager = $manager;
         $this->faker = Factory::create();
-        $this->_generateArticles(8); 
-        $this->_manager->flush();
+        $this->_generateArticles(8);
+        $this->manager->flush();
     }
 
     /**
      * @return Array<class-string>
      */
-    public function getDependencies(): Array
+    public function getDependencies(): array
     {
         return [
-            PictureFixtures::class, 
-            AuthorFixtures::class, 
-            CategoryFixtures::class, 
+            PictureFixtures::class,
+            AuthorFixtures::class,
+            CategoryFixtures::class,
         ];
-        
     }
 
-   /**        
-    *      [_generateArticles description]
-    *
-    * @param int $number [$number description]
-    *
-    * @return void           [return description]
-    */
+    /**
+     *      [_generateArticles description]
+     *
+     * @param int $number [$number description]
+     *
+     * @return void           [return description]
+     */
     private function _generateArticles(int $number): void
     {
         for ($i = 0; $i < $number; $i++) {
             $article = new Article();
-            
 
             [
                 "dateObject" => $dateObject,
                 "dateString" => $dateString
-            ] = $this->_generateRandomDateBetweenRange('01/01/2021', '01/05/2021');
+            ] = $this->generateRandomDateBetweenRange('01/01/2021', '01/05/2021');
 
             $title = $this->faker->sentence(4);
             $slug = $this->slugger->slug(\strtolower($title).'-' .$dateString);
-            
+
             $picture = $this->getReference("picture{$i}");
 
             $article->setTitle($title)
@@ -89,29 +87,26 @@ class ArticleFixtures extends Fixture implements DependentFixtureInterface
                 ->setSlug($slug)
                 ->setCreatedAt($dateObject)
                 ->setIsPublished(false)
-                ->setAuthor($this->getReference("author".mt_rand(0, 1)))                    
-                ->addCategory($this->getReference("category".mt_rand(1, 3)))  
+                ->setAuthor($this->getReference("author".mt_rand(0, 1)))
+                ->addCategory($this->getReference("category".mt_rand(1, 3)))
                 ->setPicture($picture);
 
-                $this->
-
-            $this->_manager->persist($article);
+            $this->manager->persist($article);
             $picture->setArticle($article);
         }
-    }   
+    }
 
     /**
      * Generate Date DatetimesStamp object
-     * 
+     *
      * @param string $start Date string with format 'd/m/Y'
-     * 
-     * @param string   $end Date string with format 'd/m/Y' 
-     * 
+     *
+     * @param string   $end Date string with format 'd/m/Y'
+     *
      * @return array{dateObject: \DateTimeImmutable, dateString: string} "d-m-Y"
      */
-    private function _generateRandomDateBetweenRange(string $start, string $end): array
+    private function generateRandomDateBetweenRange(string $start, string $end): array
     {
-
         $startDate = \DateTime::createFromFormat('d/m/Y', $start);
         $endDate = \DateTime::createFromFormat('d/m/Y', $end);
         if (!$startDate || !$endDate) {
@@ -128,7 +123,5 @@ class ArticleFixtures extends Fixture implements DependentFixtureInterface
             "dateObject" => $dateTimeImmutable,
             "dateString" => $dateTimeImmutable->format('d-m-Y')
         ];
-
     }
-
 }

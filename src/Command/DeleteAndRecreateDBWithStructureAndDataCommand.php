@@ -5,6 +5,7 @@ namespace App\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,6 +16,7 @@ class DeleteAndRecreateDBWithStructureAndDataCommand extends Command
     // app-clean-db : (on choisit le nom de cmd) la commande que on tape dans CMD pour executer ce fichier
     // DeleteAndRecreateDBWithStructureAndDataCommand
     protected static $defaultName = 'app:clean-db';
+    private $progressBar;
 
     protected function configure(): void
     {
@@ -28,39 +30,44 @@ class DeleteAndRecreateDBWithStructureAndDataCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        
+        $this->progressBar = new ProgressBar($output);
+
         $io->section("Suppression de la base de donnees puis creation d'une nouvelle avec structure et données pré-remplies.");
 
+        $this->progressBar->start();
+        $this->progressBar->advance(1);
         $this->runSymfonyCommand($input, $output, 'doctrine:database:drop', true);
-
+        $this->progressBar->advance(2);
         $this->runSymfonyCommand($input, $output, 'doctrine:database:create');
-
+        $this->progressBar->advance(3);
         $this->runSymfonyCommand($input, $output, 'doctrine:migrations:migrate');
-
+        $this->progressBar->advance(4);
         $this->runSymfonyCommand($input, $output, 'doctrine:fixtures:load');
-       
+
+
+        $this->progressBar->finish();
+
         $io->success('Succes CMD: RAS => DATABASE propre et prête :) COOOLL !! ');
 
         return Command::SUCCESS;
     }
 
     private function runSymfonyCommand(
-        InputInterface $input, 
+        InputInterface $input,
         OutputInterface $output,
         string $command,
         bool $forceOption = false
-    ): void
-    {
+    ): void {
         $application = $this->getApplication();
 
-        if(!$application) {
+        if (!$application) {
             throw new \LogicException("Y a pas, NO application :( ");
         }
 
         $command = $application->find($command);
 
-        if($forceOption){
-            $input = new ArrayInput(['--force' => true ]); 
+        if ($forceOption) {
+            $input = new ArrayInput(['--force' => true ]);
         }
 
         $input->setInteractive(false);

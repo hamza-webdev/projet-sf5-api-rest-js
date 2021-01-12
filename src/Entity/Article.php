@@ -7,10 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ArticleRepository;
-use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
  * @Table(name="articles")
  */
@@ -62,7 +60,7 @@ class Article
      * @ORM\ManyToMany(targetEntity=Category::class, mappedBy="articles")
      * @var ArrayCollection<int, Category>
      */
-    private  $categories;
+    private $categories;
 
     /**
      * @ORM\OneToOne(targetEntity=Picture::class, mappedBy="article", cascade={"persist", "remove"})

@@ -6,10 +6,8 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
 class Category
@@ -30,7 +28,7 @@ class Category
      * @ORM\ManyToMany(targetEntity=Article::class, inversedBy="categories")
      * @var ArrayCollection<int, Article>
      */
-    private  $articles;
+    private $articles;
 
     public function __construct()
     {
