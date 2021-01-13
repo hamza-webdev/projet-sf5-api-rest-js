@@ -41,7 +41,6 @@ class AuthenticatorSubscriber implements EventSubscriberInterface
             'Symfony\Component\Security\Http\Evenet\LogoutEvent' => 'OnSecurityLogout',
             'security.logout_on_change'                         =>  'onSecurityLogoutOnChange',
             SecurityEvents::SWITCH_USER                         =>  'onSecuritySwitchUser'
-
         ];
     }
 
